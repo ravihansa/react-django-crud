@@ -95,7 +95,10 @@ export default class Company extends Component {
     }
 
     deleteRow = (id) => {
-        console.log('this is:', id);
+        axios.delete('http://127.0.0.1:8000/api/company' + `/${id}/`)
+            .then(res => {
+                this.getCompany();
+            });
     }
 
     render() {
