@@ -1,6 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import { ToastsContainer, ToastsStore } from 'react-toasts';
+import { IoMdTrash } from "react-icons/io";
+import { MdDoneAll, MdPersonAdd } from "react-icons/md";
+import { TiPencil, TiUpload, TiArrowSync } from "react-icons/ti";
 
 export default class Company extends Component {
 
@@ -69,11 +73,13 @@ export default class Company extends Component {
         if (this.state.id) {
             axios.put('http://127.0.0.1:8000/api/company' + `/${this.state.id}/`, obj)
                 .then(res => {
+                    ToastsStore.success('Successfully Updated!');
                     this.getCompany();
                 });
         } else {
             axios.post('http://127.0.0.1:8000/api/company/', obj)
                 .then(res => {
+                    ToastsStore.success('Successfully Saved!');
                     this.getCompany();
                 });
         }
@@ -97,12 +103,15 @@ export default class Company extends Component {
     deleteRow = (id) => {
         axios.delete('http://127.0.0.1:8000/api/company' + `/${id}/`)
             .then(res => {
+                ToastsStore.warning('Successfully Deleted!');
                 this.getCompany();
             });
     }
 
+
     render() {
         const { isLoading, companyList } = this.state;
+
         return (
             <div>
                 <div className="container">
@@ -132,74 +141,62 @@ export default class Company extends Component {
                                         </div>
                                         <div className="form-group">
                                             <button className="btn btn-primary" type="submit" >
-                                                <i className="fa fa-floppy-o"></i>
-                                                Submit</button>
+                                                Submit <MdDoneAll />
+                                            </button>
                                             <button onClick={this.reset} className="btn btn-secondary" type="button" >
-                                                <i className="fa fa-repeat"></i>
-                                                Reset</button>
+                                                <TiArrowSync />
+                                                Reset
+                                            </button>
                                         </div>
                                     </form>
                                 </div>
                                 <div className="col-md-6">
                                     <h6 className="text-center">Registered Companies</h6><br />
+                                    {/* <div>
+                                        { 
+                                        if(!isLoading)
+                                            return (
+                                            <h6 className="text-center alert alert-danger" role="alert">message</h6><br />
+                                        );
+                                        }
+                                    </div> */}
                                     <h6 className="text-center alert alert-danger" role="alert">message</h6><br />
                                     <table className="table table-sm table-hover">
-                                        {/* <tbody>
-                                            <tr >
-                                                <td>AAAAA</td>
-                                                <td>AAAAA</td>
-                                                <td>
-                                                    <a className="btn">
-                                                        <i className="fa fa-upload"></i>
-                                                        <input hidden type="file" name="logo" accept="image/*" />
-                                                    </a>
-                                                    <a className="btn" >
-                                                        <i className="fa fa-pencil-square-o"></i>
-                                                    </a>
-                                                    <a className="btn" >
-                                                        <i className="fa fa-trash-o"></i>
-                                                    </a>
-                                                    <a className="btn">
-                                                        <i className="fa fa-user-plus"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </tbody> */}
                                         <tbody>
-                                            {!isLoading ? (companyList.map((item, i) => {
-                                                return [
-                                                    <Fragment>
-                                                        <tr key={i}>
-                                                            <td>{item.name}</td>
-                                                            <td>{item.email}</td>
-                                                            <td>
-                                                                <a className="btn">a
-                                                                    <i className="fa fa-upload"></i>
-                                                                    <input hidden type="file" name="logo" accept="image/*" />
-                                                                </a>
-                                                                <a className="btn" onClick={(e) => this.editRow(item.id, item.name, item.email, item.webSite, e)}>b
-                                                                    <i className="fa fa-pencil-square-o"></i>
-                                                                </a>
-                                                                <a className="btn" onClick={(e) => this.deleteRow(item.id, e)}>c
-                                                                    <i className="fa fa-trash-o"></i>
-                                                                </a>
-                                                                <a className="btn">d
-                                                                    <i className="fa fa-user-plus"></i>
-                                                                </a>
-                                                            </td>
-                                                        </tr>
-                                                    </Fragment>
-                                                ];
+                                            {(companyList.map((item, i) => {
+                                                if (!isLoading)
+                                                    return [
+                                                        <Fragment>
+                                                            <tr key={i}>
+                                                                <td>{item.name}</td>
+                                                                <td>{item.email}</td>
+                                                                <td>
+                                                                    <a className="btn">
+                                                                        <TiUpload />
+                                                                        <input hidden type="file" name="logo" accept="image/*" />
+                                                                    </a>
+                                                                    <a className="btn" onClick={(e) => this.editRow(item.id, item.name, item.email, item.webSite, e)}>
+                                                                        <TiPencil />
+                                                                    </a>
+                                                                    <a className="btn" onClick={(e) => this.deleteRow(item.id, e)}>
+                                                                        <IoMdTrash />
+                                                                    </a>
+                                                                    <a className="btn">
+                                                                        <MdPersonAdd />
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        </Fragment>
+                                                    ];
                                             })
-                                            ) : (
-                                                    <p>loading...</p>
-                                                )}
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <ToastsContainer store={ToastsStore} />
                 </div>
             </div>
         )
