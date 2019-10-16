@@ -6,7 +6,7 @@ import { IoMdTrash } from "react-icons/io";
 import { MdDoneAll, MdPersonAdd } from "react-icons/md";
 import { TiPencil, TiUpload, TiArrowSync } from "react-icons/ti";
 
-export default class Company extends Component {
+export default class Employee extends Component {
 
     constructor(props) {
         super(props);
@@ -116,7 +116,7 @@ export default class Company extends Component {
             <div>
                 <div className="container">
                     <div className="text-center">
-                        <h2 className="jumbotron">Company Details</h2>
+                        <h2 className="jumbotron">Employee Details</h2>
                     </div>
                     <div className="row">
                         <div className="col">

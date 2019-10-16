@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 import Company from './components/company.component';
+import Employee from './components/employee.component';
 
 class App extends Component {
   render() {
@@ -25,6 +26,7 @@ class App extends Component {
           <br></br>
           <Switch>
             <Route exact path='/company' component={Company} />
+            <Route exact path='/employee' component={Employee} />
           </Switch>
         </div>
       </Router>
