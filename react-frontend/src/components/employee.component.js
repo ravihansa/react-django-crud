@@ -10,23 +10,31 @@ export default class Employee extends Component {
 
     constructor(props) {
         super(props);
-        this.onChangeCompanyName = this.onChangeCompanyName.bind(this);
+        this.onChangeFirstName = this.onChangeFirstName.bind(this);
+        this.onChangeLastName = this.onChangeLastName.bind(this);
         this.onChangeEmail = this.onChangeEmail.bind(this);
-        this.onChangeWebSite = this.onChangeWebSite.bind(this);
+        this.onChangePhoneNo = this.onChangePhoneNo.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
         this.state = {
             id: '',
-            companyName: '',
+            firstName: '',
+            lastName: '',
             email: '',
-            webSite: '',
-            companyList: [],
+            phoneNo: '',
+            companyId: this.props.match.params.companyId,
+            employeeList: [],
             isLoading: true
         }
     }
-    onChangeCompanyName(e) {
+    onChangeFirstName(e) {
         this.setState({
-            companyName: e.target.value
+            firstName: e.target.value
+        });
+    }
+    onChangeLastName(e) {
+        this.setState({
+            lastName: e.target.value
         });
     }
     onChangeEmail(e) {
@@ -34,17 +42,17 @@ export default class Employee extends Component {
             email: e.target.value
         })
     }
-    onChangeWebSite(e) {
+    onChangePhoneNo(e) {
         this.setState({
-            webSite: e.target.value
+            phoneNo: e.target.value
         })
     }
 
     getCompany() {
-        axios.get(`http://127.0.0.1:8000/api/company/`)
+        axios.get(`http://127.0.0.1:8000/api/employee/`)
             .then(res => {
                 this.setState({
-                    companyList: res.data,
+                    employeeList: res.data,
                     isLoading: false
                 });
             })
@@ -57,27 +65,30 @@ export default class Employee extends Component {
     reset = () => {
         this.setState({
             id: '',
-            companyName: '',
+            firstName: '',
+            lastName: '',
             email: '',
-            webSite: ''
+            phoneNo: ''
         })
     }
 
     onSubmit(e) {
         e.preventDefault();
         const obj = {
-            name: this.state.companyName,
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
             email: this.state.email,
-            webSite: this.state.webSite
+            phoneNo: this.state.phoneNo,
+            companyId: this.state.companyId
         };
         if (this.state.id) {
-            axios.put('http://127.0.0.1:8000/api/company' + `/${this.state.id}/`, obj)
+            axios.put('http://127.0.0.1:8000/api/employee' + `/${this.state.id}/`, obj)
                 .then(res => {
                     ToastsStore.success('Successfully Updated!');
                     this.getCompany();
                 });
         } else {
-            axios.post('http://127.0.0.1:8000/api/company/', obj)
+            axios.post('http://127.0.0.1:8000/api/employee/', obj)
                 .then(res => {
                     ToastsStore.success('Successfully Saved!');
                     this.getCompany();
@@ -85,23 +96,24 @@ export default class Employee extends Component {
         }
         this.setState({
             id: '',
-            companyName: '',
+            firstName: '',
+            lastName: '',
             email: '',
-            webSite: ''
+            phoneNo: ''
         })
     }
 
-    editRow = (id, name, email, webSite) => {
+    editRow = (id, name, email, phoneNo) => {
         this.setState({
             id: id,
-            companyName: name,
+            firstName: name,
             email: email,
-            webSite: webSite
+            phoneNo: phoneNo
         })
     }
 
     deleteRow = (id) => {
-        axios.delete('http://127.0.0.1:8000/api/company' + `/${id}/`)
+        axios.delete('http://127.0.0.1:8000/api/employee' + `/${id}/`)
             .then(res => {
                 ToastsStore.warning('Successfully Deleted!');
                 this.getCompany();
@@ -110,7 +122,7 @@ export default class Employee extends Component {
 
 
     render() {
-        const { isLoading, companyList } = this.state;
+        const { isLoading, employeeList } = this.state;
 
         return (
             <div>
@@ -125,9 +137,14 @@ export default class Employee extends Component {
                                     <form onSubmit={this.onSubmit}>
                                         <input type="hidden" className="form-control" name="id" />
                                         <div className="form-group">
-                                            <label>Company Name</label>
-                                            <input className="form-control" value={this.state.companyName}
-                                                onChange={this.onChangeCompanyName} name="name" placeholder="Company Name" required />
+                                            <label>First Name</label>
+                                            <input className="form-control" value={this.state.firstName}
+                                                onChange={this.onChangeFirstName} name="firstName" placeholder="First Name" required />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Last Name</label>
+                                            <input className="form-control" value={this.state.lastName}
+                                                onChange={this.onChangeLastName} name="lastName" placeholder="Last Name" required />
                                         </div>
                                         <div className="form-group">
                                             <label>Email</label>
@@ -135,9 +152,9 @@ export default class Employee extends Component {
                                                 onChange={this.onChangeEmail} name="email" placeholder="Email" type="email" required />
                                         </div>
                                         <div className="form-group">
-                                            <label>WebSite</label>
-                                            <input className="form-control" value={this.state.webSite}
-                                                onChange={this.onChangeWebSite} name="webSite" placeholder="WebSite" />
+                                            <label>Phone Number</label>
+                                            <input className="form-control" value={this.state.phoneNo}
+                                                onChange={this.onChangePhoneNo} name="phoneNo" placeholder="Phone Number" />
                                         </div>
                                         <div className="form-group">
                                             <button className="btn btn-primary" type="submit" >
@@ -173,7 +190,7 @@ export default class Employee extends Component {
                                     {/* <h6 className="text-center alert alert-danger" role="alert">message</h6><br /> */}
                                     <table className="table table-sm table-hover">
                                         <tbody>
-                                            {(companyList.map((item, i) => {
+                                            {(employeeList.map((item, i) => {
                                                 if (!isLoading)
                                                     return [
                                                         <Fragment>
@@ -185,7 +202,7 @@ export default class Employee extends Component {
                                                                         <TiUpload />
                                                                         <input hidden type="file" name="logo" accept="image/*" />
                                                                     </a>
-                                                                    <a className="btn" onClick={(e) => this.editRow(item.id, item.name, item.email, item.webSite, e)}>
+                                                                    <a className="btn" onClick={(e) => this.editRow(item.id, item.name, item.email, item.PhoneNo, e)}>
                                                                         <TiPencil />
                                                                     </a>
                                                                     <a className="btn" onClick={(e) => this.deleteRow(item.id, e)}>
