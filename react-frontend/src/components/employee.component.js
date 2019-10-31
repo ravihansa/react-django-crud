@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { ToastsContainer, ToastsStore } from 'react-toasts';
 import { IoMdTrash } from "react-icons/io";
-import { MdDoneAll, MdPersonAdd } from "react-icons/md";
+import { MdDoneAll } from "react-icons/md";
 import { TiPencil, TiUpload, TiArrowSync } from "react-icons/ti";
 
 export default class Employee extends Component {
@@ -48,8 +48,8 @@ export default class Employee extends Component {
         })
     }
 
-    getCompany() {
-        axios.get(`http://127.0.0.1:8000/api/employee/`)
+    getEmployee() {
+        axios.get(`http://127.0.0.1:8000/api/employee/company` + `/${this.props.match.params.companyId}/`)
             .then(res => {
                 this.setState({
                     employeeList: res.data,
@@ -59,7 +59,7 @@ export default class Employee extends Component {
     }
 
     componentDidMount() {
-        this.getCompany();
+        this.getEmployee();
     }
 
     reset = () => {
@@ -85,13 +85,13 @@ export default class Employee extends Component {
             axios.put('http://127.0.0.1:8000/api/employee' + `/${this.state.id}/`, obj)
                 .then(res => {
                     ToastsStore.success('Successfully Updated!');
-                    this.getCompany();
+                    this.getEmployee();
                 });
         } else {
             axios.post('http://127.0.0.1:8000/api/employee/', obj)
                 .then(res => {
                     ToastsStore.success('Successfully Saved!');
-                    this.getCompany();
+                    this.getEmployee();
                 });
         }
         this.setState({
@@ -103,10 +103,11 @@ export default class Employee extends Component {
         })
     }
 
-    editRow = (id, name, email, phoneNo) => {
+    editRow = (id, firstName, lastName, email, phoneNo) => {
         this.setState({
             id: id,
-            firstName: name,
+            firstName: firstName,
+            lastName: lastName,
             email: email,
             phoneNo: phoneNo
         })
@@ -116,7 +117,7 @@ export default class Employee extends Component {
         axios.delete('http://127.0.0.1:8000/api/employee' + `/${id}/`)
             .then(res => {
                 ToastsStore.warning('Successfully Deleted!');
-                this.getCompany();
+                this.getEmployee();
             });
     }
 
@@ -182,7 +183,7 @@ export default class Employee extends Component {
                                         {isLoading ? (
                                             <h6 className="text-center alert alert-danger" role="alert">Loading...</h6>
                                         ) : (
-                                                <h6 className="text-center">Registered Companies</h6>
+                                                <h6 className="text-center">Registered Employees</h6>
                                             )}
                                     </div>
                                     <br></br>
@@ -195,21 +196,19 @@ export default class Employee extends Component {
                                                     return [
                                                         <Fragment>
                                                             <tr key={i}>
-                                                                <td>{item.name}</td>
+                                                                <td>{item.firstName}</td>
+                                                                <td>{item.lastName}</td>
                                                                 <td>{item.email}</td>
                                                                 <td>
                                                                     <a className="btn">
                                                                         <TiUpload />
                                                                         <input hidden type="file" name="logo" accept="image/*" />
                                                                     </a>
-                                                                    <a className="btn" onClick={(e) => this.editRow(item.id, item.name, item.email, item.PhoneNo, e)}>
+                                                                    <a className="btn" onClick={(e) => this.editRow(item.id, item.firstName, item.lastName, item.email, item.phoneNo, e)}>
                                                                         <TiPencil />
                                                                     </a>
                                                                     <a className="btn" onClick={(e) => this.deleteRow(item.id, e)}>
                                                                         <IoMdTrash />
-                                                                    </a>
-                                                                    <a className="btn">
-                                                                        <MdPersonAdd />
                                                                     </a>
                                                                 </td>
                                                             </tr>

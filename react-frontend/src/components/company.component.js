@@ -5,6 +5,7 @@ import { ToastsContainer, ToastsStore } from 'react-toasts';
 import { IoMdTrash } from "react-icons/io";
 import { MdDoneAll, MdPersonAdd } from "react-icons/md";
 import { TiPencil, TiUpload, TiArrowSync } from "react-icons/ti";
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 export default class Company extends Component {
 
@@ -191,9 +192,11 @@ export default class Company extends Component {
                                                                     <a className="btn" onClick={(e) => this.deleteRow(item.id, e)}>
                                                                         <IoMdTrash />
                                                                     </a>
-                                                                    <a className="btn">
-                                                                        <MdPersonAdd />
-                                                                    </a>
+                                                                    <Link to={'/employee/' + item.id}>
+                                                                        <a className="btn">
+                                                                            <MdPersonAdd />
+                                                                        </a>
+                                                                    </Link>
                                                                 </td>
                                                             </tr>
                                                         </Fragment>
